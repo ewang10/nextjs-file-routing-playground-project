@@ -5,14 +5,22 @@ import ResultsTitle from "../../components/events/results-title";
 import Button from "../../components/ui/button";
 import ErrorAlert from "../../components/ui/error-alert";
 
-const FilteredEventsPage = ({ 
-    hasError, 
+const FilteredEventsPage = ({
+    hasError,
     filteredEvents,
     date
 }) => {
+    let pageHeadData = (
+        <Head>
+            <title>Filtered Events</title>
+            <meta name='description' content='A list of filtered events.' />
+        </Head>
+    );
+
     if (hasError) {
         return (
             <>
+                {pageHeadData}
                 <ErrorAlert>
                     <p>Invalid filter. Please adjust your values!</p>
                 </ErrorAlert>
@@ -23,9 +31,19 @@ const FilteredEventsPage = ({
         );
     }
 
+    const { numMonth, numYear } = date;
+
+    pageHeadData = (
+        <Head>
+            <title>Filtered Events</title>
+            <meta name='description' content={`All events for ${numMonth}/${numYear}.`} />
+        </Head>
+    );
+
     if (!filteredEvents || !filteredEvents.length) {
         return (
             <>
+                {pageHeadData}
                 <ErrorAlert>
                     <p>No events found for the chosen filter!</p>
                 </ErrorAlert>
@@ -36,15 +54,11 @@ const FilteredEventsPage = ({
         );
     }
 
-    const { numMonth, numYear } = date;
     const dateFilter = new Date(numYear, numMonth - 1);
 
     return (
         <>
-            <Head>
-                <title>Filtered Events</title>
-                <meta name='description' content={`All events for ${numMonth}/${numYear}.`} />
-            </Head>
+            {pageHeadData}
             <ResultsTitle date={dateFilter} />
             <EventList events={filteredEvents} />
         </>
