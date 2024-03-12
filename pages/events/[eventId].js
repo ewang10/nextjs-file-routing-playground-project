@@ -4,6 +4,7 @@ import EventSummary from "../../components/event-detail/event-summary";
 import EventLogistics from "../../components/event-detail/event-logistics";
 import EventContent from "../../components/event-detail/event-content";
 import ErrorAlert from "../../components/ui/error-alert";
+import Comments from "../../components/input/comments";
 
 const EventDetailPage = ({ event }) => {
     if (!event) {
@@ -14,7 +15,7 @@ const EventDetailPage = ({ event }) => {
         );
     }
 
-    const { title, description, location, image, date } = event;
+    const { title, description, location, image, date, id } = event;
 
     return (
         <>
@@ -27,6 +28,7 @@ const EventDetailPage = ({ event }) => {
             <EventContent>
                 <p>{description}</p>
             </EventContent>
+            <Comments eventId={id}/>
         </>
     );
 }
