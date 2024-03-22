@@ -1,4 +1,6 @@
-const handler = (req, res) => {
+import { MongoClient } from 'mongodb';
+
+const handler = async (req, res) => {
     if (req.method === 'POST') {
         const { email } = req.body;
 
@@ -6,6 +8,13 @@ const handler = (req, res) => {
             res.status(422).json({ message: 'Invalid email address.' });
             return;
         }
+
+        const client = await MongoClient.connect('mongodb+srv://ericDB:ewh2elgoTw8jabyH@cluster0.lidjonx.mongodb.net/newsletter?retryWrites=true&w=majority&appName=Cluster0');
+        const db = client.db();
+
+        await db.collection('emails').insertOne({ email });
+
+        client.close();
 
         res.status(201).json({ message: 'Signed up!' });
     }
