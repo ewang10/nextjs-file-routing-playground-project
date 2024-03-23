@@ -9,10 +9,10 @@ const handler = async (req, res) => {
             return;
         }
 
-        const client = await MongoClient.connect('mongodb+srv://ericDB:ewh2elgoTw8jabyH@cluster0.lidjonx.mongodb.net/newsletter?retryWrites=true&w=majority&appName=Cluster0');
+        const client = await MongoClient.connect('mongodb+srv://ericDB:ewh2elgoTw8jabyH@cluster0.lidjonx.mongodb.net/events?retryWrites=true&w=majority&appName=Cluster0');
         const db = client.db();
 
-        await db.collection('emails').insertOne({ email });
+        await db.collection('newsletter').insertOne({ email });
 
         client.close();
 

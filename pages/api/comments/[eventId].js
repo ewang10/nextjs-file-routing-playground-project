@@ -1,3 +1,5 @@
+import { MongoClient } from 'mongodb';
+
 const isDataInvalid = (email, name, text) => {
     return (
         !email ||
@@ -9,8 +11,11 @@ const isDataInvalid = (email, name, text) => {
     );
 };
 
-const handler = (req, res) => {
+const handler = async (req, res) => {
     const { eventId } = req.query;
+
+    const client = await MongoClient.connect('mongodb+srv://ericDB:ewh2elgoTw8jabyH@cluster0.lidjonx.mongodb.net/events?retryWrites=true&w=majority&appName=Cluster0');
+    const db = client.db();
 
     if (req.method === 'POST') {
         const { email, name, text } = req.body;
@@ -21,23 +26,30 @@ const handler = (req, res) => {
         }
 
         const newComment = {
-            id: new Date().toISOString(),
             email,
             name,
-            text
+            text,
+            eventId
         };
+
+        const result = await db.collection('comments').insertOne(newComment);
+
+        newComment.id = result.insertedId;
 
         res.status(201).json({ message: 'Comment added!', newComment });
     }
 
     if (req.method === 'GET') {
-        const dummyComments = [
-            { id: 'c1', name: 'test1', text: 'test text 1' },
-            { id: 'c2', name: 'test2', text: 'test text 2' }
-        ];
+        const documents = await db
+        .collection('comments')
+        .find()
+        .sort({ _id: -1 })
+        .toArray();
 
-        res.status(200).json({ comments: dummyComments });
+        res.status(200).json({ comments: documents });
     }
+    
+    client.close();
 };
 
 export default handler;
